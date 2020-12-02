@@ -22,7 +22,25 @@ sigma = 0.3;
 %  Note: You can compute the prediction error using 
 %        mean(double(predictions ~= yval))
 %
+CVec = [0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30];
+sigVec = [0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30];
+errorSet = zeros(size(CVec'*sigVec));
 
+for i = 1:size(CVec,2)
+    tempC = CVec(i);
+    for j = 1:size(sigVec,2)
+        tempsig = sigVec(j);
+        tempmodel = svmTrain(X,y,tempC,@(x1, x2)gaussianKernel(x1, x2, tempsig));
+        predictions = svmPredict(tempmodel,Xval);
+        errorSet(i,j) = mean(double(predictions ~= yval));
+    end
+end
+
+minerror = min(errorSet(:)) ; 
+[index1,index2] = find(minerror == errorSet);
+
+C = CVec(index1);
+sigma = sigVec(index2);
 
 
 
