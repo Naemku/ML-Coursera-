@@ -21,10 +21,24 @@ idx = zeros(size(X,1), 1);
 % Note: You can use a for-loop over the examples to compute this.
 %
 
+m = size(X,1);
 
+%This code is more efficient using vectorization!!
 
+%for i = 1:size(X,1)
+%   [a idx(i)] = min(sum(((X(i,:) - centroids).*(X(i,:) - centroids)),2));
+%end
 
-
+for i = 1 : m
+    temp_length = zeros(K,1);
+    for j = 1 : K
+        d = X(i,:) - centroids(j,:);
+        square_length = d * d';
+        temp_length(j) = square_length;
+    end
+    [m, index] = min(temp_length);
+    idx(i) = index;
+end
 
 
 % =============================================================
